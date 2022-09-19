@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import * as os from 'os';
 import * as path from 'path';
 import isThere from 'is-there';
 import * as mkdirp from 'mkdirp';
@@ -69,18 +68,12 @@ export class DtsContent {
     if (!this.resultList || !this.resultList.length) return '';
 
     if (this.namedExports) {
-      return (
-        ['export const __esModule: true;', ...this.resultList.map(line => 'export ' + line), ''].join(os.EOL) + this.EOL
-      );
+      return ['export const __esModule: true;', ...this.resultList.map(line => 'export ' + line), ''].join(this.EOL);
     }
 
-    const data = (
-      ['declare const styles: {', ...this.resultList.map(line => '  ' + line), '};', 'export = styles;', ''].join(
-        os.EOL,
-      ) + this.EOL
+    return ['declare const styles: {', ...this.resultList.map(line => '  ' + line), '};', 'export = styles;', ''].join(
+      this.EOL,
     );
-
-    return this.singleQuote ? data.replace(/\"/g, "'") : data;
   }
 
   public get tokens(): string[] {
@@ -146,10 +139,15 @@ export class DtsContent {
 
   private createResultList(): string[] {
     const convertKey = this.getConvertKeyMethod(this.camelCase);
+    const hasDash = /\-/;
 
     const result = this.rawTokenList
       .map(k => convertKey(k))
-      .map(k => (!this.namedExports ? 'readonly "' + k + '": string;' : 'const ' + k + ': string;'));
+      .map(k =>
+        !this.namedExports
+          ? `readonly ${hasDash.test(k) ? (this.singleQuote ? `'${k}'` : `"${k}"`) : k}: string;`
+          : `const ${k}: string;`,
+      );
 
     return result;
   }

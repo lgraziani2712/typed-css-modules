@@ -13,7 +13,7 @@ describe('DtsCreator', () => {
     it('returns DtsContent instance simple css', done => {
       creator.create('test/testStyle.css').then(content => {
         assert.equal(content.contents.length, 1);
-        assert.equal(content.contents[0], 'readonly "myClass": string;');
+        assert.equal(content.contents[0], 'readonly myClass: string;');
         done();
       });
     });
@@ -31,30 +31,30 @@ describe('DtsCreator', () => {
     it('returns DtsContent instance from composing css', done => {
       creator.create('test/composer.css').then(content => {
         assert.equal(content.contents.length, 1);
-        assert.equal(content.contents[0], 'readonly "root": string;');
+        assert.equal(content.contents[0], 'readonly root: string;');
         done();
       });
     });
     it('returns DtsContent instance from composing css whose has invalid import/composes', done => {
       creator.create('test/invalidComposer.scss').then(content => {
         assert.equal(content.contents.length, 1);
-        assert.equal(content.contents[0], 'readonly "myClass": string;');
+        assert.equal(content.contents[0], 'readonly myClass: string;');
         done();
       });
     });
     it('returns DtsContent instance from the pair of path and contents', done => {
       creator.create('test/somePath', `.myClass { color: red }`).then(content => {
         assert.equal(content.contents.length, 1);
-        assert.equal(content.contents[0], 'readonly "myClass": string;');
+        assert.equal(content.contents[0], 'readonly myClass: string;');
         done();
       });
     });
     it('returns DtsContent instance combined css', done => {
       creator.create('test/combined/combined.css').then(content => {
         assert.equal(content.contents.length, 3);
-        assert.equal(content.contents[0], 'readonly "block": string;');
-        assert.equal(content.contents[1], 'readonly "myClass": string;');
-        assert.equal(content.contents[2], 'readonly "box": string;');
+        assert.equal(content.contents[0], 'readonly block: string;');
+        assert.equal(content.contents[1], 'readonly myClass: string;');
+        assert.equal(content.contents[2], 'readonly box: string;');
         done();
       });
     });
@@ -145,10 +145,9 @@ describe('DtsContent', () => {
           content.formatted,
           `\
 declare const styles: {
-  readonly "myClass": string;
+  readonly myClass: string;
 };
 export = styles;
-
 `,
         );
         done();
@@ -162,7 +161,6 @@ export = styles;
           `\
 export const __esModule: true;
 export const myClass: string;
-
 `,
         );
         done();
@@ -176,7 +174,6 @@ export const myClass: string;
           `\
 export const __esModule: true;
 export const myClass: string;
-
 `,
         );
         done();
@@ -197,10 +194,9 @@ export const myClass: string;
             content.formatted,
             `\
 declare const styles: {
-  readonly "myClass": string;
+  readonly myClass: string;
 };
 export = styles;
-
 `,
           );
           done();
@@ -213,10 +209,9 @@ export = styles;
             content.formatted,
             `\
 declare const styles: {
-  readonly "myClass": string;
+  readonly myClass: string;
 };
 export = styles;
-
 `,
           );
           done();
@@ -229,10 +224,9 @@ export = styles;
             content.formatted,
             `\
 declare const styles: {
-  readonly "MyClass": string;
+  readonly MyClass: string;
 };
 export = styles;
-
 `,
           );
           done();
@@ -250,7 +244,6 @@ declare const styles: {
   readonly "my-class": string;
 };
 export = styles;
-
 `,
           );
           done();
@@ -266,7 +259,6 @@ declare const styles: {
   readonly 'My-class': string;
 };
 export = styles;
-
 `,
           );
           done();
